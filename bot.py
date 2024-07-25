@@ -35,7 +35,20 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
     try:
         # Загружаем пост из Instagram
         shortcode = url.split("/")[-2]
-        post = instaloader.Post.from_shortcode(L.context, shortcode)
+        post = None
+        retries = 3  # количество попыток
+        while retries > 0:
+            try:
+                post = instaloader.Post.from_shortcode(L.context, shortcode)
+                break  # выход из цикла если успешный запрос
+            except instaloader.exceptions.QueryReturnedBadRequestException as e:
+                logger.error(f"Ошибка при запросе: {e}. Ожидание перед повторной попыткой...")
+                time.sleep(60)  # ожидание перед повторной попыткой
+                retries -= 1
+
+        if post is None:
+            logger.error("Не удалось загрузить пост из Instagram после нескольких попыток.")
+            return
 
         if post.is_video:
             video_url = post.video_url
@@ -49,8 +62,7 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
 
     except instaloader.exceptions.InstaloaderException as e:
         logger.error(f"Ошибка при обработке ссылки: {e}")
-        # Подождите перед повторной попыткой запроса
-        time.sleep(60)
+        # Ничего не отправляем в случае ошибки.
 
 def main() -> None:
     # Создаем Application и передаем ему токен бота
