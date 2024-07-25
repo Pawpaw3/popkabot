@@ -6,7 +6,7 @@ import instaloader
 
 # Включаем логирование
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levellevelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
@@ -20,12 +20,11 @@ if not BOT_TOKEN:
 # Инициализируем Instaloader
 L = instaloader.Instaloader()
 
-
 # Функция для обработки команд /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
-        'Привет! Я бот, который проверяет ссылки на Instagram и отправляет видео, если они содержат видео.')
-
+        'Привет! Я бот, который проверяет ссылки на Instagram и отправляет видео, если они содержат видео.'
+    )
 
 # Функция для обработки сообщений с ссылками на Instagram
 async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -50,18 +49,9 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
         logger.error(f"Ошибка при обработке ссылки: {e}")
         # Ничего не отправляем в случае ошибки.
 
-
 def main() -> None:
     # Создаем Application и передаем ему токен бота
     application = Application.builder().token(BOT_TOKEN).build()
 
     # Регистрируем обработчики команд и сообщений
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.Regex(r'(https?://www\.instagram\.com/\S+)'), handle_instagram_link))
-
-    # Запускаем бота
-    application.run_polling()
-
-
-if __name__ == '__main__':
-    main()
+    application.add_handler(C
