@@ -6,7 +6,7 @@ import instaloader
 
 # Включаем логирование
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levellevelname)s - %(message)s',
     level=logging.INFO
 )
 
@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 # Токен бота
 BOT_TOKEN = os.getenv('BOT_TOKEN')
+
+# Проверка, что токен действительно установлен
+if not BOT_TOKEN:
+    raise ValueError("No BOT_TOKEN provided. Please set the BOT_TOKEN environment variable.")
 
 # Инициализируем Instaloader
 L = instaloader.Instaloader()
