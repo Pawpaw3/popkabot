@@ -1,12 +1,13 @@
 import logging
 import os
+import time
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import instaloader
 
 # Включаем логирование
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levellevelname)s - %(message)s',
     level=logging.INFO
 )
 
@@ -17,8 +18,23 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 if not BOT_TOKEN:
     raise ValueError("No BOT_TOKEN provided")
 
-# Инициализируем Instaloader
+# Чтение учетных данных из переменных окружения
+INSTAGRAM_USERNAME = os.getenv('INSTAGRAM_USERNAME')
+INSTAGRAM_PASSWORD = os.getenv('INSTAGRAM_PASSWORD')
+
+if not INSTAGRAM_USERNAME or not INSTAGRAM_PASSWORD:
+    raise ValueError("Instagram credentials are not set")
+
+# Инициализируем Instaloader и авторизуемся в Instagram
 L = instaloader.Instaloader()
+try:
+    L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+except instaloader.exceptions.BadCredentialsException:
+    logger.error("Invalid credentials. Please check your username and password.")
+    raise
+except Exception as e:
+    logger.error(f"An error occurred while logging in: {e}")
+    raise
 
 # Функция для обработки команд /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -45,6 +61,9 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
         else:
             logger.info("Ссылка не содержит видео.")
             # Ничего не отправляем, если ссылка не содержит видео.
+
+        # Добавляем паузу между запросами
+        time.sleep(5)
 
     except instaloader.exceptions.InstaloaderException as e:
         logger.error(f"Ошибка при обработке ссылки: {e}")
