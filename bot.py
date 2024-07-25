@@ -49,7 +49,6 @@ async def handle_instagram_link(update: Update, context: ContextTypes.DEFAULT_TY
 
     except instaloader.exceptions.InstaloaderException as e:
         logger.error(f"Ошибка при обработке ссылки: {e}")
-        await update.message.reply_text("Произошла ошибка при обработке ссылки. Пожалуйста, попробуйте позже.")
         # Подождите перед повторной попыткой запроса
         time.sleep(60)
 
@@ -59,7 +58,7 @@ def main() -> None:
 
     # Регистрируем обработчики команд и сообщений
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.Regex(r'(https?://www\.instagram\.com/\S+)'), handle_instagram_link))
+    application.add_handler(MessageHandler(filters.Regex(r'https?://(www\.)?instagram\.com/\S+'), handle_instagram_link))
 
     # Запускаем бота
     application.run_polling()
