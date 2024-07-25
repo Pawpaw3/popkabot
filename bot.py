@@ -54,4 +54,11 @@ def main() -> None:
     application = Application.builder().token(BOT_TOKEN).build()
 
     # Регистрируем обработчики команд и сообщений
-    application.add_handler(C
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.Regex(r'(https?://www\.instagram\.com/\S+)'), handle_instagram_link))
+
+    # Запускаем бота
+    application.run_polling()
+
+if __name__ == '__main__':
+    main()
