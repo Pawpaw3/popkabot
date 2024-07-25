@@ -7,7 +7,7 @@ import instaloader
 
 # Включаем логирование
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levellevelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
@@ -21,6 +21,11 @@ if not BOT_TOKEN:
 # Чтение учетных данных из переменных окружения
 INSTAGRAM_USERNAME = os.getenv('INSTAGRAM_USERNAME')
 INSTAGRAM_PASSWORD = os.getenv('INSTAGRAM_PASSWORD')
+
+# Выводим все переменные окружения для отладки
+logger.info(f"Environment Variables: {os.environ}")
+logger.info(f"INSTAGRAM_USERNAME: {INSTAGRAM_USERNAME}")
+logger.info(f"INSTAGRAM_PASSWORD: {INSTAGRAM_PASSWORD}")
 
 if not INSTAGRAM_USERNAME or not INSTAGRAM_PASSWORD:
     raise ValueError("Instagram credentials are not set")
